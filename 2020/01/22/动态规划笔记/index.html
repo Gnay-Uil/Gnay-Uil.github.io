@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <title>动态规划笔记</title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+  <body>
+    <main class="container">
+      <header class="header">
+    <div class="blog-title">
+        <h1><a href="/">Yang</a></h1>
+        <p class="description"></p>
+    </div>
+    <nav class="navbar">
+        <ul class="menu">
+            
+        </ul>
+    </nav>
+</header>
+
+      <article class="post">
+          <div class="post-title">
+            <h2 class="title">动态规划笔记</h2>
+          </div>          
+          <div class="post-meta">
+            <span class="post-time">2020-01-22</span>
+            
+            
+            <hr>
+          </div>
+          <div class="post-content"><p>最初学习C语言时接触过一点算法，因为期末考试就是上机写算法，五道题。不过那时候大部分是靠背的，老师也给了题库，出的题目都是从题库中抽的。记得最后我背得还不错，五道题全写出来了。那时候听说过动态规划，也听说过背包问题，不过怎么看都看不懂，尤其是递推那一部分。</p>
+<p>最近刷LeetCode做了很多关于动态规划的题，对动态规划有了那么一点体会。现在想通过背包问题来加深对动态规划的理解。</p>
+<p>问题:有一个容量为v的背包和一堆物品，每个物品都有一个体积wi和价值vi，你要从这堆物品中选取出几个物品，不超过背包的体积v，同时又能够达到最大价值。</p>
+<p>这是最基本的背包问题，每个物品用ti表示，则该物品要么在背包，要么不在背包，可以用1和0表示，因此又称01背包。</p>
+<p>面对第i个物品有两种结果，放入背包和不放入背包，当然放入背包的前提是这个物品小于当前背包的容量。如果这个物品体积大于当前背包的容量，这个物品肯定不能拿，当前获得的价值与前i-1个物品的价值相同。如果把物品放入背包，这时候不一定能获得最高价值，因此要与不放入该物品的情况比较。</p>
+<p>dp[i][j] 当容量为j时，前i个物品所能达到的最大价值。第一行dp[0][j]全部设置为0，因为没有选择任何物品。确定状态转移方程</p>
+<ul>
+<li>当j&lt;w，即背包装不下这个物品，则当前价值与选择前i-1个物品价值相同，dp[i][[j] &#x3D; dp[i-1][j]</li>
+<li>当j&gt;w,背包能装下这个物品，当前价值为装入这个物品与不装入这个物品的价值最大者。装入这个物品则要找到<strong>当前背包容量减去当前物品容量的最大价值</strong>，即dp[i-1][j-w[i]]。那么，当前可获得最大价值为dp[i][j] &#x3D; max(dp[i-1][j-w[i]]+v[i],dp[i-1][j])</li>
+</ul>
+<p>这里可以手动模拟该过程，dp实际上就是一张表格。我们不断填表格，直到表格填到右下角也就得到问题的解了。假设物品的重量w[i]和价值v[i]如下</p>
+<table>
+<thead>
+<tr>
+<th>物品编号i</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>体积w</td>
+<td>2</td>
+<td>3</td>
+<td>5</td>
+<td>5</td>
+<td>4</td>
+</tr>
+<tr>
+<td>价值v</td>
+<td>2</td>
+<td>4</td>
+<td>6</td>
+<td>7</td>
+<td>6</td>
+</tr>
+</tbody></table>
+<p>假设背包容量为10，填写表格，其中列中的编号为物品编号，行中的编号即为背包容量。第一行即可选物品为0个，因此价值为0。第一列表示背包容量为0，可获得的价值为0。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>10</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>4</td>
+<td>4</td>
+<td>6</td>
+<td>6</td>
+<td>6</td>
+<td>6</td>
+<td>6</td>
+<td>6</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>4</td>
+<td>4</td>
+<td>6</td>
+<td>6</td>
+<td>8</td>
+<td>10</td>
+<td>10</td>
+<td>12</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>4</td>
+<td>4</td>
+<td>7</td>
+<td>7</td>
+<td>9</td>
+<td>11</td>
+<td>11</td>
+<td>13</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>4</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>10</td>
+<td>11</td>
+<td>13</td>
+<td>13</td>
+</tr>
+</tbody></table>
+<p>表格的填写顺序应该是从上到下，从左到右。先填左右，即一行一行的填。比如取dp[4][7]表示有1-4号物品供选择，当前物品为4，背包容量为7，我们所能获得的最大价值。假如当前我们不拿第4号物品，当前获得价值为dp[4-1]][7] &#x3D; dp[3][7],如果我们拿这个物品，我们首先找到<strong>拿着个物品前我们得到的价值量</strong>,即dp[4-1][7-w[4]] &#x3D; dp[3][2] &#x3D; 2,再加上当前物品的价值7，则拿这件物品我们能得到价值为9，大于我们不拿这件物品的价值，因此我们要把这件物品放入背包。dp[4][7] &#x3D; dp[4-1][7-w[4]]+v[4]。填完表格，dp[5][10]即为我们要得到的结果。</p>
+<p>转换为代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">#include&lt;vector&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int max(int a,int b)&#123;</span><br><span class="line">	return a&gt;b?a:b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line">	int n,volume;</span><br><span class="line">	cout&lt;&lt;&quot;输入物品数量和背包容量:&quot;; </span><br><span class="line">	cin&gt;&gt;n&gt;&gt;volume;</span><br><span class="line">	cout&lt;&lt;&quot;输入每件物品的体积和价值:&quot;;</span><br><span class="line">	vector&lt;int&gt; w(n+1),v(n+1);</span><br><span class="line">	for(int i=1;i&lt;=n;i++)&#123;</span><br><span class="line">		cin&gt;&gt;w[i]&gt;&gt;v[i];</span><br><span class="line">	&#125;</span><br><span class="line">	vector&lt;vector&lt;int&gt; &gt; dp(n+1,vector&lt;int&gt;(volume+1,0));</span><br><span class="line">	for(int i=1;i&lt;=n;i++)&#123;</span><br><span class="line">		for(int j=1;j&lt;=volume;j++)&#123;</span><br><span class="line">			if(j&gt;w[i])&#123;</span><br><span class="line">				dp[i][j] = max(dp[i-1][j],dp[i-1][j-w[i]]+v[i]);</span><br><span class="line">			&#125;else&#123;</span><br><span class="line">				dp[i][j] = dp[i-1][j];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; </span><br><span class="line">	printf(&quot;结果为:%d&quot;,dp[n][volume]);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>感觉自己语言表达能力非常弱，写下来仍没有表达清楚。不过这个就这样了。不过对递推过程的理解确有所加深。</p>
+<p>背包问题还有个变式，将问题稍作修改，假设前面条件一致，每一个编号的物品有<strong>无限个</strong>，你可以重复拿同一个物品，在这种情况下你能获取的价值是多少？这个问题变化不大，可以重复利用上述思想。上面的递推式是dp[i][j] &#x3D; max(dp[i-1][j],dp[i-1][j-w[i]]+v[i]),这里把max函数第二个参数的dp[i-1][j-w[i]]换成dp[i][[j-w[i]]即可，因为这里i的意思是我们现在在选取第i个物品，并且我们已经知道了选取前i-1个物品的子问题的最优解，因此从i-1个物品的最优解中再加上当前物品的价值就是当前问题的最优解。现在当前物品有无限个，可以重复选取，与当前第i个物品选没选无关，要从dp[i][j-w[i]]中找到选当前物品之前的价值，而不是dp[i][j-w[i]]。</p>
+<p>实际上在更新二维数组过程可以发现，每个单元和上一行某个单元之间有依赖关系。比如我们更新第i行第j列时，我们只要找到上一行的dp[i-1][j-w[i]]即可，某一行只依赖于自己的左上角元素。比如上面的表格中dp[3][4]由dp[2][4-w[4]]这个二维数组可以压缩为一维，但是为了防止从左到右更新后面的元素覆盖新的元素，遍历顺序要从右到左，修改代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">#include&lt;vector&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int max(int a,int b)&#123;</span><br><span class="line">	return a&gt;b?a:b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line">	int n,volume;</span><br><span class="line">	cout&lt;&lt;&quot;输入物品数量和背包容量:&quot;; </span><br><span class="line">	cin&gt;&gt;n&gt;&gt;volume;</span><br><span class="line">	cout&lt;&lt;&quot;输入每件物品的体积和价值:&quot;;</span><br><span class="line">	vector&lt;int&gt; w(n+1),v(n+1);</span><br><span class="line">	for(int i=1;i&lt;=n;i++)&#123;</span><br><span class="line">		cin&gt;&gt;w[i]&gt;&gt;v[i];</span><br><span class="line">	&#125;</span><br><span class="line">	vector&lt;int&gt; dp(volume+1,0);</span><br><span class="line">	for(int i=1;i&lt;=n;i++)&#123;</span><br><span class="line">		for(int j=volume;j&gt;=0;j--)&#123;</span><br><span class="line">			if(j&gt;=w[i])&#123;</span><br><span class="line">				dp[j] = max(dp[j],dp[j-w[i]]+v[i]);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		printf(&quot;第%d轮:&quot;,i);</span><br><span class="line">		for(int j=0;j&lt;=volume;j++)&#123;</span><br><span class="line">			printf(&quot;%3d  &quot;,dp[j]);</span><br><span class="line">		&#125;</span><br><span class="line">		printf(&quot;\n&quot;);</span><br><span class="line">	&#125; </span><br><span class="line">	printf(&quot;结果为:%d&quot;,dp[volume]);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在遍历时增加输出语句可以看到每一次遍历后dp数组的变化，与二维数组一致。</p>
+<p><img src="https://github.com/Gnay-Uil/ImagLink/blob/master/2020/bag_problem.PNG?raw=true" alt="enter description here"></p>
+<p>本来写这篇笔记是因为在刷题时看到了一个凑硬币的题很容易就想到了背包问题，于是就想先搞明白背包问题再来解题。但这一搞就是半天过去了。背包问题算是搞明白了，这个题依然解不出。</p>
+<p><img src="https://github.com/Gnay-Uil/ImagLink/blob/master/2020/coins.PNG?raw=true" alt="enter description here"></p>
+<p>这就是背包问题的变式完全背包，只不过问题有了些变化，我们必须刚好装满背包，装入物品数量最少。</p>
+<p>为了求出刚好凑出指定的钱包数，我们将dp数组定义为凑出金额i需要的最少硬币数。初始时我们全部设为无限大，表示不能凑出。然后根据递推式进行更新。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int coinChange(vector&lt;int&gt;&amp; coins, int amount) &#123;</span><br><span class="line">        int size = coins.size();</span><br><span class="line">        if(size&lt;=0 || amount&lt;=0) return 0;</span><br><span class="line">		//声明一个amount+1长度的数组dp，代表各个价值的钱包，第0个钱包可以容纳的总价值为0，其它全部初始化为无穷大</span><br><span class="line">    	//dp[j]代表当钱包的总价值为j时，所需要的最少硬币的个数</span><br><span class="line">        vector&lt;int&gt; dp(amount+1,INT_MAX); </span><br><span class="line">        dp[0] = 0;</span><br><span class="line">        for(int i=0;i&lt;size;i++)&#123;</span><br><span class="line">		/**</span><br><span class="line">    		 * 	当外层循环执行一次以后，说明在只使用前i-1个硬币的情况下，各个钱包的最少硬币个数已经得到，</span><br><span class="line">    		 * 		有些钱包的值还是无穷大，说明在仅使用前i-1个硬币的情况下，不能凑出钱包的价值</span><br><span class="line">    		 * 	现在开始再放入第i个硬币，要想放如w[i]，钱包的价值必须满足j&gt;=w[i]，所以在开始放入第i个硬币时，j从w[i]开始</span><br><span class="line">    		 */</span><br><span class="line">            for(int j=coins[i];j&lt;=amount;j++)&#123;</span><br><span class="line">			/**</span><br><span class="line">			 * 	如果钱包当前的价值j仅能允许放入一个w[i]，那么就要进行权衡，以获得更少的硬币数</span><br><span class="line">			 * 		如果放入0个：此时钱包里面硬币的个数保持不变： v0=dp[j]</span><br><span class="line">			 * 		如果放入1个：此时钱包里面硬币的个数为：		v1=dp[j-coins[i]]+1</span><br><span class="line">			 * 		 【前提是dp[j-coins[i]]必须有值，如果dp[j-coins[i]]是无穷大，说明无法凑出j-coins[i]价值的钱包，</span><br><span class="line">			 * 	              那么把w[i]放进去以后，自然也凑不出dp[j]的钱包】</span><br><span class="line">			 * 	所以，此时当钱包价值为j时，里面的硬币数目为 dp[j]=min&#123;v0,v1&#125;</span><br><span class="line">			 * 	如果钱包当前价值j能够放入2个w[i]，就要再进行一次权衡</span><br><span class="line">			 * 		如果不放人第2个w[i]，此时钱包里面硬币数目为，v1=dp[j]=min&#123;v0,v1&#125;</span><br><span class="line">			 * 		如果放入第2个w[i],  此时钱包里面硬币数目为，v2=dp[j-coins[i]]+1</span><br><span class="line">			 * 	所以，当钱包的价值为j时，里面的硬币数目为dp[j]=min&#123;v1,v2&#125;=min&#123;v0,v1,v2&#125;</span><br><span class="line">			 * 	钱包价值j能允许放入3个，4个.........w[i]，不断更新dp[j]，最后得到在仅使用前i个硬币的时候，每个钱包里的最少硬币数目</span><br><span class="line">			 */</span><br><span class="line">                if(dp[j-coins[i]]!=INT_MAX)</span><br><span class="line">                    dp[j] = min(dp[j-coins[i]]+1,dp[j]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if(dp[amount]!=INT_MAX)&#123;</span><br><span class="line">            return dp[amount];</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            return -1;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+</div
+
+        </article>
+        
+        <!-- <p class="footer">Made with ♥︎ by Yang</p> -->
+      </main>
+  </body>
+</html>
